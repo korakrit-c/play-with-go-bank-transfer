@@ -2,10 +2,10 @@ package main
 
 import (
 	"bank-transfer/handler"
+	"bank-transfer/logs"
 	"bank-transfer/repository"
 	"bank-transfer/service"
 	"fmt"
-	"log"
 	"net/http"
 	"strings"
 	"time"
@@ -26,7 +26,7 @@ func main() {
 	_ = customerRepository
 	_ = customerRepositoryMock
 
-	customerService := service.NewCustomerService(customerRepositoryMock)
+	customerService := service.NewCustomerService(customerRepository)
 	customerHandler := handler.NewCustomerHandler(customerService)
 
 	router := mux.NewRouter()
@@ -34,8 +34,8 @@ func main() {
 	router.HandleFunc("/customers", customerHandler.GetCustomers).Methods(http.MethodGet)
 	router.HandleFunc("/customers/{customerID:[0-9]+}", customerHandler.GetCustomer).Methods(http.MethodGet)
 
-	log.Printf("Banking service started at port %v", viper.GetInt("app.prot"))
-	http.ListenAndServe(fmt.Sprintf(":%v", viper.GetInt("app.prot")), router)
+	logs.Info("Banking service started at port " + viper.GetString("app.port"))
+	http.ListenAndServe(fmt.Sprintf(":%v", viper.GetInt("app.port")), router)
 }
 
 func init() {
