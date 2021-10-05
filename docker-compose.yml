@@ -1,0 +1,23 @@
+version: '3.8'
+services:
+  db_mysql:
+    container_name: db_mysql
+    hostname: db_mysql
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: P@ssw0rd
+      MYSQL_DATABASE: bank
+      MYSQL_USER: bank
+      MYSQL_PASSWORD : P@ssw0rd
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    ports:
+      - '3306:3306'
+    expose:
+      - '3306'
+    volumes:
+      - ./mysql-storage:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 10s
+      retries: 10
